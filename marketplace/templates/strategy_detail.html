@@ -1,0 +1,160 @@
+{% extends "marketplace/layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h2>{{ strategy.name }}</h2>
+                            <p class="text-muted">By {{ strategy.author.username }}</p>
+                        </div>
+                        <div class="text-end">
+                            <h3 class="text-success">${{ "%.2f"|format(strategy.price) }}</h3>
+                            {% if not owned %}
+                                <form method="POST" action="{{ url_for('marketplace.purchase_strategy', strategy_id=strategy.id) }}">
+                                    <button type="submit" class="btn btn-primary">Purchase</button>
+                                </form>
+                            {% else %}
+                                <span class="badge bg-success">Owned</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <span class="badge bg-primary">{{ strategy.category }}</span>
+                        <div class="mt-2">
+                            {% for i in range(5) %}
+                                {% if i < strategy.rating|int %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <small class="text-muted">({{ strategy.reviews.count() }} reviews)</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h4>Description</h4>
+                    <p>{{ strategy.description }}</p>
+                    
+                    {% if owned %}
+                    <div class="mt-4">
+                        <h4>Strategy File</h4>
+                        <a href="{{ url_for('marketplace.download_strategy', strategy_id=strategy.id) }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-download"></i> Download Strategy
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4>Reviews</h4>
+                    
+                    {% if owned %}
+                    <form method="POST" action="{{ url_for('marketplace.add_review', strategy_id=strategy.id) }}">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label class="form-label">Your Rating</label>
+                            <div class="rating-input">
+                                {% for i in range(5, 0, -1) %}
+                                    <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" 
+                                           {% if form.rating.data == i %}checked{% endif %}>
+                                    <label for="star{{ i }}"><i class="bi bi-star-fill"></i></label>
+                                {% endfor %}
+                            </div>
+                            {% for error in form.rating.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.comment.label(class="form-label") }}
+                            {{ form.comment(class="form-control", rows=3) }}
+                            {% for error in form.comment.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                    <hr>
+                    {% endif %}
+                    
+                    {% for review in reviews %}
+                    <div class="review mb-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ review.user.username }}</strong>
+                            <div>
+                                {% for i in range(5) %}
+                                    {% if i < review.rating %}
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    {% else %}
+                                        <i class="bi bi-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ review.created_at.strftime('%B %d, %Y') }}</small>
+                        <p class="mt-1">{{ review.comment }}</p>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No reviews yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>About the Author</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar me-3">
+                            <i class="bi bi-person-circle" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <div>
+                            <h6>{{ strategy.author.username }}</h6>
+                            <small class="text-muted">Joined {{ strategy.author.date_joined.strftime('%B %Y') }}</small>
+                        </div>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ strategy.author.strategies.count() }}</span>
+                            <span class="stat-label">Strategies</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">{{ strategy.author.strategy_reviews.count() }}</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h5>Strategy Details</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Upload Date</span>
+                            <span>{{ strategy.created_at.strftime('%Y-%m-%d') }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Last Updated</span>
+                            <span>{{ strategy.updated_at.strftime('%Y-%m-%d') }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Downloads</span>
+                            <span>{{ strategy.downloads }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

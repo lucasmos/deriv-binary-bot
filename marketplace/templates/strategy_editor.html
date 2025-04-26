@@ -1,0 +1,179 @@
+{% extends "marketplace/layout.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Strategy Builder</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Strategy Name</label>
+                        <input type="text" class="form-control" id="strategy-name" value="{{ strategy.name if strategy else '' }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Strategy Type</label>
+                        <select class="form-select" id="strategy-type">
+                            <option value="trend">Trend Following</option>
+                            <option value="reversal">Reversal</option>
+                            <option value="range">Range Bound</option>
+                            <option value="scalping">Scalping</option>
+                        </select>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6>Indicators</h6>
+                    <div class="list-group mb-3" id="indicators-list">
+                        <a href="#" class="list-group-item list-group-item-action indicator-item" data-indicator="sma">SMA</a>
+                        <a href="#" class="list-group-item list-group-item-action indicator-item" data-indicator="ema">EMA</a>
+                        <a href="#" class="list-group-item list-group-item-action indicator-item" data-indicator="rsi">RSI</a>
+                        <a href="#" class="list-group-item list-group-item-action indicator-item" data-indicator="macd">MACD</a>
+                        <a href="#" class="list-group-item list-group-item-action indicator-item" data-indicator="bollinger">Bollinger Bands</a>
+                    </div>
+                    
+                    <div id="indicator-params" class="mb-3" style="display: none;">
+                        <h6>Parameters</h6>
+                        <div id="params-container"></div>
+                        <button class="btn btn-sm btn-primary mt-2" id="add-indicator">Add Indicator</button>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6>Conditions</h6>
+                    <div id="conditions-container" class="mb-3">
+                        <div class="condition-group mb-2 p-2 border rounded">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Condition Group 1</small>
+                                <button class="btn btn-sm btn-danger">&times;</button>
+                            </div>
+                            <div class="condition-item mb-1">
+                                <select class="form-select form-select-sm condition-param">
+                                    <option>Select indicator</option>
+                                </select>
+                                <select class="form-select form-select-sm condition-operator">
+                                    <option>></option>
+                                    <option><</option>
+                                    <option>=</option>
+                                </select>
+                                <input type="text" class="form-control form-control-sm condition-value" placeholder="Value">
+                                <button class="btn btn-sm btn-danger">&times;</button>
+                            </div>
+                            <button class="btn btn-sm btn-secondary add-condition">+ Add Condition</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-primary" id="add-condition-group">+ Add Condition Group</button>
+                    
+                    <hr>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" id="save-strategy">
+                            {% if strategy %}Update{% else %}Save{% endif %} Strategy
+                        </button>
+                        <button class="btn btn-outline-secondary" id="test-strategy">Test Strategy</button>
+                        {% if strategy %}
+                        <button class="btn btn-outline-danger" id="delete-strategy">Delete Strategy</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>Strategy Preview</h5>
+                        <div>
+                            <select class="form-select form-select-sm" id="timeframe" style="width: auto; display: inline-block;">
+                                <option value="1m">1 Minute</option>
+                                <option value="5m">5 Minutes</option>
+                                <option value="15m">15 Minutes</option>
+                                <option value="1h">1 Hour</option>
+                                <option value="4h">4 Hours</option>
+                                <option value="1d">1 Day</option>
+                            </select>
+                            <select class="form-select form-select-sm" id="asset" style="width: auto; display: inline-block;">
+                                <option value="EURUSD">EUR/USD</option>
+                                <option value="GBPUSD">GBP/USD</option>
+                                <option value="USDJPY">USD/JPY</option>
+                                <option value="BTCUSD">BTC/USD</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chart-container" style="height: 500px;">
+                        <canvas id="strategy-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Backtest Results</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th>Total Trades</th>
+                                        <td id="total-trades">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Win Rate</th>
+                                        <td id="win-rate">0%</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Profit Factor</th>
+                                        <td id="profit-factor">0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th>Total Profit</th>
+                                        <td id="total-profit">$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Max Drawdown</th>
+                                        <td id="max-drawdown">0%</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Risk/Reward</th>
+                                        <td id="risk-reward">0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h6>Performance Chart</h6>
+                        <canvas id="performance-chart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charting.js') }}"></script>
+<script src="{{ url_for('static', filename='js/strategy_editor.js') }}"></script>
+<script>
+    {% if strategy %}
+    const existingStrategy = {{ strategy|tojson|safe }};
+    initializeEditorWithStrategy(existingStrategy);
+    {% endif %}
+</script>
+{% endblock %}
+{% endblock %}

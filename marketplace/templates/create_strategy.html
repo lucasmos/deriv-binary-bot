@@ -1,0 +1,65 @@
+{% extends "marketplace/layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Upload New Strategy</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('marketplace.upload_strategy') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                    {% for error in form.name.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group mt-3">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", rows=5) }}
+                    {% for error in form.description.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.price.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.price(class="form-control") }}
+                            </div>
+                            {% for error in form.price.errors %}
+                                <small class="text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form.category.label(class="form-label") }}
+                            {{ form.category(class="form-select") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mt-3">
+                    {{ form.strategy_file.label(class="form-label") }}
+                    {{ form.strategy_file(class="form-control") }}
+                    <small class="text-muted">Upload a .json or .py file containing your strategy</small>
+                    {% for error in form.strategy_file.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary">Upload Strategy</button>
+                    <a href="{{ url_for('marketplace.marketplace_home') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
