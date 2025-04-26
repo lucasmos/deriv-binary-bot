@@ -1,55 +1,66 @@
-# Core Dependencies
+# Core Requirements
 Flask==2.3.2
+Flask-Login==0.6.2
 Flask-SQLAlchemy==3.0.3
 Flask-Migrate==4.0.4
-Flask-Login==0.6.2
+Flask-WTF==1.1.1
+Flask-Cors==3.0.10
 python-dotenv==1.0.0
 
 # Database
-psycopg2-binary==2.9.6
+psycopg2-binary==2.9.6  # For PostgreSQL
 SQLAlchemy==2.0.19
-alembic==1.11.1
 
-# API Clients
-python-deriv-api==0.1.6
-requests==2.31.0
-gunicorn==20.1.0
+# Authentication & Security
+bcrypt==4.0.1
+PyJWT==2.7.0
+itsdangerous==2.1.2
+Flask-Talisman==1.0.0
+cryptography==41.0.3
 
-# AI/ML
-tensorflow
-scikit-learn==1.2.2
-pandas==2.0.3
-numpy==1.24.3
-TA-lib
+# AI/ML Components
+numpy
+pandas
+scikit-learn
+tensorflow  # or pytorch if preferred
+keras==2.12.0
+ta-lib==0.4.24  # Technical analysis library
 
-# Payments
-stripe==5.5.0
-pycryptodome==3.18.0
+# Trading & Financial
+ccxt  # Crypto exchange integrations
+#deriv-binary-api  # Deriv API wrapper
+alpha-vantage  # Market data
+websockets #Added for websocket support
 
-# Utilities
+# Payment Processors
+stripe
+requests
+python-mpesa  # For M-Pesa integration
+airtel # For Airtel Money
+
+# Data Processing & Utilities
+pandas-ta==0.3.14b0  # Technical analysis indicators
+redis==4.5.5  # For caching
+celery==5.3.1  # For async tasks
 python-dateutil==2.8.2
-pytz==2023.3
-redis==4.5.5
-celery==5.2.7
 
-# Email
-Flask-Mail==0.9.1
+# API Documentation
+Flask-RESTx==1.1.0
+swagger-ui-bundle==0.0.9
 
-# OAuth
-authlib==1.2.0
-Flask-Dance==7.0.0
-
-# Testing
-pytest==7.3.1
-pytest-cov==4.0.0
+# Testing & Development
+pytest==7.4.0
+pytest-cov==4.1.0
+Faker==18.11.2
 factory-boy==3.2.1
-Faker==18.10.1
+responses  # For mocking HTTP requests
 
-# Linting
-flake8==6.0.0
-black==23.3.0
-isort==5.12.0
+# Deployment
+gunicorn==20.1.0
+whitenoise==6.4.0
+sentry-sdk[flask]==1.28.1
 
-# Documentation
-sphinx==6.2.1
-sphinx-rtd-theme==1.2.0
+# Additional Utilities
+python-decouple==3.8  # Configuration management
+loguru==0.7.0  # Enhanced logging
+tzlocal==4.3.1  # Timezone handling
