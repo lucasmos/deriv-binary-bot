@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+  {% include "components/sidebar.html" %}
+  
+  <div class="main-content">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Admin Dashboard</h1>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Total Users</h5>
+            <p class="card-value">{{ stats.total_users }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Active Today</h5>
+            <p class="card-value">{{ stats.active_today }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Total Trades</h5>
+            <p class="card-value">{{ stats.total_trades }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Platform Profit</h5>
+            <p class="card-value">${{ "%.2f"|format(stats.platform_profit) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Recent Users -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Recent Users</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Joined</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in recent_users %}
+                  <tr>
+                    <td>
+                      <a href="{{ url_for('admin.user_detail', user_id=user.id) }}">
+                        {{ user.username }}
+                      </a>
+                    </td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                      <span class="badge bg-{{ 'success' if user.is_active else 'secondary' }}">
+                        {{ 'Active' if user.is_active else 'Inactive' }}
+                      </span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- System Alerts -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>System Alerts</h5>
+          </div>
+          <div class="card-body">
+            {% if system_alerts %}
+              {% for alert in system_alerts %}
+              <div class="alert alert-{{ alert.level }} mb-2">
+                <strong>{{ alert.title }}</strong>
+                <p class="mb-0">{{ alert.message }}</p>
+                <small class="text-muted">{{ alert.timestamp|time_ago }}</small>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="alert alert-info mb-0">
+                No system alerts
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

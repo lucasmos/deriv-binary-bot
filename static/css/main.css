@@ -1,0 +1,95 @@
+/* Base Styles */
+:root {
+    --primary: #3498db;
+    --secondary: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --dark: #2c3e50;
+    --light: #ecf0f1;
+    --gray: #95a5a6;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Navigation */
+  .navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .navbar-brand {
+    font-weight: 700;
+    color: var(--dark) !important;
+  }
+  
+  .nav-link {
+    font-weight: 500;
+  }
+  
+  /* Cards */
+  .card {
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .card-header {
+    background-color: white;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+  
+  .btn-success {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+  }
+  
+  /* Forms */
+  .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+  }
+  
+  /* Alerts */
+  .alert {
+    border-radius: 0.25rem;
+  }
+  
+  /* Utility Classes */
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+  
+  .shadow-sm {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  /* Trading Panel Styles */
+  .trading-panel {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .trading-panel .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .trading-panel .nav-tabs .nav-link.active {
+    color: var(--primary);
+    border-color: var(--primary);
+  }

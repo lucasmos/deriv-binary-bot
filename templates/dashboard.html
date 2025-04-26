@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <!-- Sidebar is included from components -->
+  
+  <div class="main-content">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Dashboard</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <span data-feather="calendar"></span>
+          This week
+        </button>
+      </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Account Balance</h5>
+            <p class="card-value">${{ "%.2f"|format(current_user.account.balance) }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Today's P/L</h5>
+            <p class="card-value text-success">+${{ "%.2f"|format(current_user.account.today_pnl) }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Win Rate</h5>
+            <p class="card-value">{{ "%.1f"|format(current_user.stats.win_rate * 100) }}%</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card stats-card">
+          <div class="card-body">
+            <h5 class="card-title">Active Strategy</h5>
+            <p class="card-value">{{ current_user.active_strategy or "None" }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Price Chart -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>Price Chart - EUR/USD</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Recent Trades -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Recent Trades</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Symbol</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>P/L</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for trade in recent_trades %}
+                  <tr>
+                    <td>{{ trade.timestamp.strftime('%H:%M') }}</td>
+                    <td>{{ trade.symbol }}</td>
+                    <td>
+                      <span class="badge bg-{{ 'success' if trade.direction == 'buy' else 'danger' }}">
+                        {{ trade.direction|upper }}
+                      </span>
+                    </td>
+                    <td>${{ "%.2f"|format(trade.amount) }}</td>
+                    <td class="{{ 'text-success' if trade.profit >= 0 else 'text-danger' }}">
+                      ${{ "%.2f"|format(trade.profit) }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activity -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Recent Activity</h5>
+          </div>
+          <div class="card-body">
+            {% for activity in recent_activity %}
+            <div class="activity-item">
+              <div class="d-flex justify-content-between">
+                <strong>{{ activity.action }}</strong>
+                <span class="activity-time">{{ activity.timestamp|time_ago }}</span>
+              </div>
+              <p class="mb-0 text-muted">{{ activity.details }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/charting.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,65 @@
+<div class="sidebar">
+    <div class="sidebar-header px-3 mb-3">
+      <h5>Navigation</h5>
+    </div>
+    
+    <ul class="sidebar-menu">
+      <li class="{{ 'active' if active_page == 'dashboard' }}">
+        <a href="{{ url_for('dashboard') }}">
+          <i class="fas fa-chart-line me-2"></i> Dashboard
+        </a>
+      </li>
+      <li class="{{ 'active' if active_page == 'trading' }}">
+        <a href="{{ url_for('trading.index') }}">
+          <i class="fas fa-exchange-alt me-2"></i> Trading
+        </a>
+      </li>
+      <li class="{{ 'active' if active_page == 'strategies' }}">
+        <a href="{{ url_for('strategies.index') }}">
+          <i class="fas fa-chess-knight me-2"></i> Strategies
+        </a>
+      </li>
+      <li class="{{ 'active' if active_page == 'marketplace' }}">
+        <a href="{{ url_for('marketplace.index') }}">
+          <i class="fas fa-store me-2"></i> Marketplace
+        </a>
+      </li>
+      <li class="{{ 'active' if active_page == 'history' }}">
+        <a href="{{ url_for('history.index') }}">
+          <i class="fas fa-history me-2"></i> History
+        </a>
+      </li>
+      <li class="{{ 'active' if active_page == 'analytics' }}">
+        <a href="{{ url_for('analytics.index') }}">
+          <i class="fas fa-chart-pie me-2"></i> Analytics
+        </a>
+      </li>
+      
+      <li class="mt-4">
+        <hr class="bg-secondary">
+      </li>
+      
+      <li class="{{ 'active' if active_page == 'account' }}">
+        <a href="{{ url_for('account.index') }}">
+          <i class="fas fa-wallet me-2"></i> Account
+        </a>
+      </li>
+      <li class="{{ 'active' if active_page == 'settings' }}">
+        <a href="{{ url_for('settings.index') }}">
+          <i class="fas fa-cog me-2"></i> Settings
+        </a>
+      </li>
+      
+      {% if current_user.has_role('admin') %}
+      <li class="mt-4">
+        <hr class="bg-secondary">
+      </li>
+      
+      <li class="{{ 'active' if active_page == 'admin' }}">
+        <a href="{{ url_for('admin.index') }}">
+          <i class="fas fa-lock me-2"></i> Admin
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>

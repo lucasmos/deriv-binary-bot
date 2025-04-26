@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row align-items-center">
+    <div class="col-lg-6">
+      <h1 class="display-4 mb-4">AI-Powered Deriv Trading Bot</h1>
+      <p class="lead mb-4">
+        Maximize your profits with our advanced trading algorithms that analyze market conditions in real-time
+        and execute trades with precision.
+      </p>
+      <div class="d-flex gap-3">
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+            Go to Dashboard
+          </a>
+        {% else %}
+          <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+            Get Started
+          </a>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">
+            Login
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <img src="{{ url_for('static', filename='images/hero-chart.png') }}" 
+           alt="Trading Chart" class="img-fluid rounded shadow">
+    </div>
+  </div>
+</div>
+
+<section class="bg-light py-5">
+  <div class="container">
+    <h2 class="text-center mb-5">Why Choose Our Trading Bot</h2>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+            <h4>AI-Powered Analysis</h4>
+            <p class="text-muted">
+              Our advanced algorithms analyze market conditions in real-time to identify profitable opportunities.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="fas fa-bolt fa-3x text-primary mb-3"></i>
+            <h4>Lightning Fast Execution</h4>
+            <p class="text-muted">
+              Execute trades in milliseconds to take advantage of even the smallest market movements.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+            <h4>Risk Management</h4>
+            <p class="text-muted">
+              Built-in risk controls protect your capital while maximizing profit potential.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
