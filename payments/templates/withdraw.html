@@ -1,0 +1,110 @@
+{% extends "marketplace/layout.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Withdraw Funds</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('payments.withdraw') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Available Balance</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control" value="{{ "%.2f"|format(current_user.balance) }}" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.amount.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.amount(class="form-control", placeholder="Enter amount to withdraw") }}
+                            </div>
+                            {% for error in form.amount.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                            <small class="text-muted">Minimum withdrawal: $10</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.currency.label(class="form-label") }}
+                            {{ form.currency(class="form-select") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.provider.label(class="form-label") }}
+                            {{ form.provider(class="form-select", id="withdraw-provider") }}
+                        </div>
+                        
+                        <div id="account-details-container">
+                            {% if form.account_details %}
+                            <div class="mb-3">
+                                {{ form.account_details.label(class="form-label") }}
+                                {{ form.account_details(class="form-control", placeholder="Enter account details") }}
+                                <small class="text-muted" id="account-details-help">
+                                    {% if form.provider.data == 'mpesa' %}
+                                    Enter your M-Pesa phone number (e.g., 254712345678)
+                                    {% elif form.provider.data == 'airtel' %}
+                                    Enter your Airtel Money phone number (e.g., 254712345678)
+                                    {% elif form.provider.data == 'bank' %}
+                                    Enter your bank account number
+                                    {% endif %}
+                                </small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Withdrawals are processed within 24 hours. A fee of 1% (min $1) applies.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-arrow-up-circle me-2"></i>Request Withdrawal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.getElementById('withdraw-provider').addEventListener('change', function() {
+    const provider = this.value;
+    let helpText = '';
+    let placeholder = '';
+    
+    switch(provider) {
+        case 'mpesa':
+            helpText = 'Enter your M-Pesa phone number (e.g., 254712345678)';
+            placeholder = '254712345678';
+            break;
+        case 'airtel':
+            helpText = 'Enter your Airtel Money phone number (e.g., 254712345678)';
+            placeholder = '254712345678';
+            break;
+        case 'bank':
+            helpText = 'Enter your bank account number';
+            placeholder = 'Account number';
+            break;
+        default:
+            helpText = 'Enter your account details';
+            placeholder = 'Account details';
+    }
+    
+    document.getElementById('account-details-help').textContent = helpText;
+    document.querySelector('#account-details-container input').placeholder = placeholder;
+});
+</script>
+{% endblock %}
+{% endblock %}

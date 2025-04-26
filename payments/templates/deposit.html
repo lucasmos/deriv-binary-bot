@@ -1,0 +1,71 @@
+{% extends "marketplace/layout.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Deposit Funds</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('payments.deposit') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.amount.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.amount(class="form-control", placeholder="Enter amount") }}
+                            </div>
+                            {% for error in form.amount.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.currency.label(class="form-label") }}
+                            {{ form.currency(class="form-select") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.provider.label(class="form-label") }}
+                            {{ form.provider(class="form-select", id="payment-provider") }}
+                        </div>
+                        
+                        <div id="method-container" class="mb-3">
+                            {% if form.method_id %}
+                            <div class="mb-3">
+                                {{ form.method_id.label(class="form-label") }}
+                                {{ form.method_id(class="form-select") }}
+                                <small class="text-muted">Select your saved payment method</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-arrow-down-circle me-2"></i>Deposit Funds
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light">
+                    <small class="text-muted">
+                        Deposits are processed instantly. Minimum deposit amount is $10.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.getElementById('payment-provider').addEventListener('change', function() {
+    // This would be replaced with dynamic loading of payment methods
+    console.log("Provider changed to:", this.value);
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "marketplace/layout.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Payment Methods</h2>
+        <a href="{{ url_for('payments.add_payment_method') }}" class="btn btn-success">
+            <i class="bi bi-plus-lg me-2"></i>Add New Method
+        </a>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if payment_methods %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Details</th>
+                            <th>Added On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for method in payment_methods %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if method.provider == 'stripe' %}
+                                    <i class="bi bi-credit-card fs-4 me-3 text-primary"></i>
+                                    <span>Credit Card</span>
+                                    {% elif method.provider == 'mpesa' %}
+                                    <i class="bi bi-phone fs-4 me-3 text-success"></i>
+                                    <span>M-Pesa</span>
+                                    {% elif method.provider == 'airtel' %}
+                                    <i class="bi bi-phone fs-4 me-3 text-danger"></i>
+                                    <span>Airtel Money</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                {% if method.provider == 'stripe' %}
+                                **** **** **** {{ method.details.last4 }}
+                                {% else %}
+                                {{ method.details.phone }}
+                                {% endif %}
+                            </td>
+                            <td>{{ method.created_at.strftime('%b %d, %Y') }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    {% if method.is_default %}
+                                    <span class="btn btn-sm btn-outline-success disabled">Default</span>
+                                    {% else %}
+                                    <form method="POST" action="{{ url_for('payments.set_default_method', method_id=method.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Set Default</button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="POST" action="{{ url_for('payments.delete_method', method_id=method.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-credit-card fs-1 text-muted"></i>
+                <h5 class="mt-3">No payment methods saved</h5>
+                <p class="text-muted">Add a payment method to make deposits faster</p>
+                <a href="{{ url_for('payments.add_payment_method') }}" class="btn btn-primary mt-2">
+                    Add Payment Method
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
