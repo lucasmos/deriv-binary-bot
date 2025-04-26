@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block title %}Refund Requests - Admin{% endblock %}
+
+{% block header %}Refund Requests{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if refund_requests %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Transaction</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Requested</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for refund in refund_requests %}
+                    <tr>
+                        <td>{{ refund.id }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.user_detail', user_id=refund.user.id) }}">
+                                {{ refund.user.username }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.transaction_detail', transaction_id=refund.transaction.id) }}">
+                                {{ refund.transaction.transaction_id|truncate(10) }}
+                            </a>
+                        </td>
+                        <td>${{ "%.2f"|format(refund.amount) }}</td>
+                        <td>{{ refund.reason }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if refund.status == 'approved' else 'warning' if refund.status == 'pending' else 'danger' }}">
+                                {{ refund.status|title }}
+                            </span>
+                        </td>
+                        <td>{{ refund.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                {% if refund.status == 'pending' %}
+                                <form method="POST" action="{{ url_for('admin.approve_refund', refund_id=refund.id) }}">
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                                <form method="POST" action="{{ url_for('admin.reject_refund', refund_id=refund.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                                {% endif %}
+                                <a href="{{ url_for('admin.refund_detail', refund_id=refund.id) }}" class="btn btn-info btn-sm">View</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Refund pagination">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.refunds', page=pagination.prev_num) }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in pagination.iter_pages() %}
+                <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.refunds', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('admin.refunds', page=pagination.next_num) }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-check-circle-fill fs-1 text-muted"></i>
+            <h5 class="mt-3">No refund requests</h5>
+            <p class="text-muted">All refund requests have been processed</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

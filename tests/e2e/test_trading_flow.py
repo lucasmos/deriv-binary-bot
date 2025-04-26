@@ -1,50 +1,43 @@
 import pytest
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from bot.core.trading_engine import TradingEngine
+from bot.strategies import TrendFollowingStrategy
+from ai.model import load_model
+from config import TestingConfig
 
-@pytest.mark.usefixtures("live_server", "driver")
 class TestTradingFlow:
-    def test_quick_trade(self, auth):
-        """Test placing a quick trade"""
-        # Log in
-        auth.login()
-        
-        # Navigate to trading page
-        self.driver.get(f"{self.live_server.url}/trading")
-        
-        # Fill in trade details
-        self.driver.find_element(By.ID, "quickBuyBtn").click()
-        
-        # Wait for success notification
-        notification = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".alert-success")))
-        
-        assert "Trade placed successfully" in notification.text
+    @pytest.fixture(autouse=True)
+    def setup(self, test_app, test_db, test_user):
+        self.app = test_app
+        self.db = test_db
+        self.user = test_user
+        self.model = load_model(TestingConfig.AI_MODEL_PATH)
+        self.strategy = TrendFollowingStrategy()
+        self.engine = TradingEngine(self.user.id, self.model, self.strategy)
 
-    def test_bot_trading(self, auth):
-        """Test starting and stopping the trading bot"""
-        # Log in
-        auth.login()
+    def test_complete_trading_flow(self, mocker):
+        # Mock broker API calls
+        mocker.patch('bot.brokers.deriv.DerivBroker.get_balance', return_value=1000.0)
+        mocker.patch('bot.brokers.deriv.DerivBroker.place_trade', return_value={'success': True, 'trade_id': 'test123'})
+        mocker.patch('bot.brokers.deriv.DerivBroker.check_trade', return_value={'status': 'won', 'profit': 50.0})
         
-        # Navigate to trading page
-        self.driver.get(f"{self.live_server.url}/trading")
+        # Test initialization
+        assert self.engine.user_id == self.user.id
+        assert self.engine.balance == 1000.0
         
-        # Switch to bot tab
-        self.driver.find_element(By.ID, "bot-tab").click()
+        # Test market analysis
+        market_data = self.engine.analyze_market('EURUSD')
+        assert 'signal' in market_data
+        assert 'confidence' in market_data
         
-        # Start bot
-        self.driver.find_element(By.ID, "startBotBtn").click()
+        # Test trade execution
+        trade_result = self.engine.execute_trade('EURUSD', 50.0)
+        assert trade_result['success'] is True
+        assert 'trade_id' in trade_result
         
-        # Verify bot started
-        stop_button = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.ID, "stopBotBtn")))
-        assert stop_button.is_displayed()
+        # Test trade monitoring
+        trade_update = self.engine.monitor_trade('test123')
+        assert trade_update['status'] == 'won'
+        assert trade_update['profit'] == 50.0
         
-        # Stop bot
-        stop_button.click()
-        
-        # Verify bot stopped
-        start_button = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.ID, "startBotBtn")))
-        assert start_button.is_displayed()
+        # Test balance update
+        assert self.engine.balance == 1050.0
