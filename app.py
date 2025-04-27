@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from config import Config
 from app.extensions import db, csrf
 from auth.models import User
-from ai.model import load_ai_model
+from ai.models import load_ai_model
 
 def create_app(config_class=Config):
     app = Flask(__name__)

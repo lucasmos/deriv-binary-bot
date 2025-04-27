@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timedelta
 import pandas as pd
 from ..bot.utils.logger import get_logger
-from .model import TradingAIModel
+from .models import TradingAIModel
 from .trainer import AITrainer
 from .validator import WalkForwardValidator
 from ..bot.analysis.market_analyzer import MarketConditionAnalyzer

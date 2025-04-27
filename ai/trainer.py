@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 from ..bot.brokers.broker_factory import BrokerFactory
 from ..bot.utils.logger import get_logger
-from .model import TradingAIModel
+from .models import TradingAIModel
 from ..bot.analysis.market_analyzer import MarketConditionAnalyzer
 from ..bot.analysis.performance_tracker import PerformanceTracker
 

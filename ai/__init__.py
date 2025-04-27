@@ -1,4 +1,4 @@
-from .model import TradingAIModel
+from .models import TradingAIModel
 from .trainer import AITrainer
 from .validator import WalkForwardValidator
 from .pipeline import ContinuousLearning

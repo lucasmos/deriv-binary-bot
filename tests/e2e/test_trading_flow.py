@@ -1,7 +1,7 @@
 import pytest
 from bot.core.trading_engine import TradingEngine
 from bot.strategies import TrendFollowingStrategy
-from ai.model import load_model
+from ai.models import load_model
 from config import TestingConfig
 
 class TestTradingFlow:

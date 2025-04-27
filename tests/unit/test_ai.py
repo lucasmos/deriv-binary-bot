@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from ai.model import TradingModel
+from ai.models import TradingModel
 from ai.data_processor import DataProcessor
 from ai.hyperparameters import Hyperparameters
 
