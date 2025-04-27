@@ -5,6 +5,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import numpy as np
 from typing import Optional, Any
+from typing import Dict, Union
+import json
 
 class AIModelHandler:
     def __init__(self):
@@ -52,23 +54,28 @@ class AIModelHandler:
             logging.error(f"Model saving error: {str(e)}")
             return False
 
-    def predict_market_trend(self, market_data: dict) -> Optional[float]:
-        """Predict market trend based on input data"""
-        if self.current_model is None:
-            self.load_latest_model()
-            if self.current_model is None:
-                return None
-                
-        try:
-            # Convert market data to features
-            features = self._prepare_features(market_data)
-            return self.current_model.predict(features)[0]
+    # Modify predict_market_trend method
+def predict_market_trend(self, market_data: Dict[str, Union[float, str]]) -> Optional[float]:
+    """Improved prediction with better type handling"""
+    try:
+        if not isinstance(market_data, dict):
+            raise ValueError("Market data must be a dictionary")
             
-        except Exception as e:
-            logging.error(f"Prediction error: {str(e)}")
+        # Convert all values to float safely
+        features = {k: float(v) for k, v in market_data.items() 
+                  if k in ['open', 'high', 'low', 'close', 'volume']}
+                  
+        if len(features) != 5:
+            logging.warning(f"Incomplete features: {json.dumps(features)}")
             return None
-
-    def _prepare_features(self, market_data: dict) -> np.ndarray:
+            
+        return self._predict_from_features(list(features.values()))
+        
+    except (ValueError, TypeError) as e:
+        logging.error(f"Data conversion error: {str(e)}")
+        return None
+    
+def _prepare_features(self, market_data: dict) -> np.ndarray:
         """Convert market data dictionary to feature array"""
         # Implement your specific feature engineering here
         features = [

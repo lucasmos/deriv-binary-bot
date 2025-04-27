@@ -50,7 +50,6 @@ class Config:
     AIRTEL_CALLBACK_URL = os.environ.get('AIRTEL_CALLBACK_URL')
     
     # Replace Stripe config with:
-    # Replace Stripe config with:
     PAYSTACK_CONFIG = {
     'SECRET_KEY': os.getenv('PAYSTACK_SECRET_KEY'),
     'PUBLIC_KEY': os.getenv('PAYSTACK_PUBLIC_KEY'),
