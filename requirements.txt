@@ -21,7 +21,7 @@ cryptography==41.0.3
 # AI/ML Components
 numpy
 pandas
-#scikit-learn
+scikit-learn
 tensorflow  # or pytorch if preferred
 keras
 ta-lib==0.4.24  # Technical analysis library
