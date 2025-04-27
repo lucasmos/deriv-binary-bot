@@ -1,0 +1,20 @@
+groups:
+- name: trading-alerts
+  rules:
+  - alert: HighTradeLatency
+    expr: histogram_quantile(0.95, sum(rate(trade_execution_latency_seconds_bucket[5m])) by (le)) > 2
+    for: 10m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High trade execution latency detected"
+      description: "95th percentile trade latency is {{ $value }}s"
+
+  - alert: FailedPayments
+    expr: rate(payment_failed_total[1h]) > 5
+    for: 30m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Payment failure rate elevated"
+      description: "{{ $value }} failed payments in the last hour"

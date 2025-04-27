@@ -1,0 +1,35 @@
+global:
+  resolve_timeout: 5m
+  smtp_from: 'alerts@deriv-bot.com'
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_auth_username: 'your-email@gmail.com'
+  smtp_auth_password: 'your-app-password'
+  smtp_require_tls: true
+
+route:
+  group_by: ['alertname', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: 'slack-notifications'
+  routes:
+  - match:
+      severity: 'critical'
+    receiver: 'sms-notifications'
+  
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - api_url: 'https://hooks.slack.com/services/XXX/YYY/ZZZ'
+    channel: '#alerts'
+    send_resolved: true
+    title: '{{ template "slack.title" . }}'
+    text: '{{ template "slack.text" . }}'
+
+- name: 'sms-notifications'
+  webhook_configs:
+  - url: 'http://sms-gateway/api'
+    send_resolved: true
+
+templates:
+- '/etc/alertmanager/templates/*.tmpl'

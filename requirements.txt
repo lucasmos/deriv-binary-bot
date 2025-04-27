@@ -21,27 +21,27 @@ cryptography==41.0.3
 # AI/ML Components
 numpy
 pandas
-scikit-learn
+#scikit-learn
 tensorflow  # or pytorch if preferred
-keras==2.12.0
+keras
 ta-lib==0.4.24  # Technical analysis library
 
 # Trading & Financial
-ccxt  # Crypto exchange integrations
+ccxt # Updated version
 #deriv-binary-api  # Deriv API wrapper
 alpha-vantage  # Market data
-websockets #Added for websocket support
+websockets==10.4  # Downgraded for compatibility
 
 # Payment Processors
-stripe
-requests
+paystackapi #for processing card payments
+requests==2.8.1
 python-mpesa  # For M-Pesa integration
 airtel # For Airtel Money
 
 # Data Processing & Utilities
 pandas-ta==0.3.14b0  # Technical analysis indicators
 redis==4.5.5  # For caching
-celery==5.3.1  # For async tasks
+celery # For async tasks
 python-dateutil==2.8.2
 
 # API Documentation

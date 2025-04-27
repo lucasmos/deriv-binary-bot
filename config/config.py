@@ -49,10 +49,14 @@ class Config:
     AIRTEL_MERCHANT_ID = os.environ.get('AIRTEL_MERCHANT_ID')
     AIRTEL_CALLBACK_URL = os.environ.get('AIRTEL_CALLBACK_URL')
     
-    # Stripe
-    STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
-    STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
-    
+    # Replace Stripe config with:
+    # Replace Stripe config with:
+    PAYSTACK_CONFIG = {
+    'SECRET_KEY': os.getenv('PAYSTACK_SECRET_KEY'),
+    'PUBLIC_KEY': os.getenv('PAYSTACK_PUBLIC_KEY'),
+    'CALLBACK_URL': os.getenv('PAYSTACK_CALLBACK_URL'),
+    'CHARGES_ENDPOINT': 'https://api.paystack.co/transaction/initialize'
+                    }
     # OAuth
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')

@@ -1,14 +1,14 @@
 from .base_provider import BasePaymentProvider
 from .airtel.client import AirtelPaymentProvider
 from .safaricom.client import SafaricomPaymentProvider
-from .stripe.client import StripePaymentProvider
+from .providers.paystack.client import PaystackPaymentProvider
 
 class PaymentProviderFactory:
     def __init__(self):
         self.providers = {
             'airtel': AirtelPaymentProvider(),
             'safaricom': SafaricomPaymentProvider(),
-            'stripe': StripePaymentProvider()
+            'paystack': PaystackPaymentProvider(),
         }
     
     def get_provider(self, provider_name):
